@@ -1,16 +1,4 @@
-const fallbackNav = `
-<ul>
-  <li><a href="index.html">Accueil</a></li>
-  <li><a href="cv.html">CV</a></li>
-  <li><a href="portfolio.html">Portfolio</a></li>
-  <li><a href="price.html">Prix</a></li>
-  <li><a href="contact.html">Contact</a></li>
-  <li><a href="bootstrap.html">Bootstrap</a></li>
-</ul>
-`;
-
-const fallbackFooter = `<p>© 2026 Mansuy Léo</p>`;
-
+// fonction utilitaire pour injecter le HTML et marquer la page courante
 function applyNavFooter(navHtml, footerHtml) {
   const navContainer = document.getElementById('site-nav');
   const footerContainer = document.getElementById('site-footer');
@@ -23,10 +11,10 @@ function applyNavFooter(navHtml, footerHtml) {
   if (activeLink) activeLink.classList.add('active');
 }
 
+// main : on charge les blocs en mode dynamique sans fallback
 async function loadPartials() {
   if (window.location.protocol === 'file:') {
-    console.warn('Navigation et footer chargés en mode file:// (fallback).');
-    applyNavFooter(fallbackNav, fallbackFooter);
+    console.error('Mode file:// détecté : fetch ne fonctionnera pas. Lance un serveur local (python -m http.server).');
     return;
   }
 
@@ -44,12 +32,13 @@ async function loadPartials() {
     applyNavFooter(navHtml, footerHtml);
   } catch (error) {
     console.error('Erreur include.js:', error);
-    applyNavFooter(fallbackNav, fallbackFooter);
   }
 }
 
+// Avec ou sans DOMContentLoaded, on lance loadPartials au bon moment.
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', loadPartials);
 } else {
   loadPartials();
 }
+
