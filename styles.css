@@ -55,6 +55,12 @@ nav a:hover {
   background: #c7d9ff;
 }
 
+/* Etat actif du lien du menu */
+nav a.active {
+  background: #004a97;
+  color: #ffffff;
+}
+
 /* Conteneur principal centré avec largeur max et marges */
 main {
   max-width: 1000px;
