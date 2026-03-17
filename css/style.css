@@ -1,7 +1,9 @@
 ﻿/* Global identity styles */
+/* Import des polices depuis Google Fonts : Montserrat pour le texte, Playfair Display pour les titres */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 :root {
+  /* Palette de couleurs et variables réutilisables */
   --bg-from: #e9eff6;
   --bg-to: #f8fbff;
   --text-main: #14243d;
@@ -14,10 +16,12 @@
   --shadow-soft: 0 12px 25px rgba(19, 40, 62, 0.12);
 }
 
+/* boîte globale pour gestion du modèle de boîte */
 * {
   box-sizing: border-box;
 }
 
+/* Ajout du scroll fluide et reset de base */
 html, body {
   margin: 0;
   padding: 0;
@@ -25,6 +29,7 @@ html, body {
   scroll-behavior: smooth;
 }
 
+/* Style global du body : typo, fond et espacement général */
 body {
   font-family: 'Montserrat', Arial, Helvetica, sans-serif;
   color: var(--text-main);
@@ -33,7 +38,7 @@ body {
   padding: 1.2rem;
 }
 
-/* Scrollbar custom */
+/* Scrollbar custom : couleurs et style de la barre de défilement */
 *::-webkit-scrollbar {
   width: 12px;
 }
@@ -50,6 +55,7 @@ body {
   background: rgba(62, 134, 181, 1);
 }
 
+/* Firefox scrollbar parameters */
 * {
   scrollbar-color: rgba(62, 134, 181, 0.8) rgba(229, 239, 248, 0.85);
   scrollbar-width: thin;
@@ -62,15 +68,17 @@ footer {
   margin: 0 auto;
 }
 
+/* Style du titre principal avec ombre subtile */
 header h1 {
   font-family: 'Playfair Display', serif;
   font-size: clamp(2rem, 5vw, 3rem);
   color: var(--brand-primary);
   text-align: center;
   margin: 0.5rem 0 1rem;
-  text-shadow: 0 3px 12px rgba(31, 70, 108, 0.2);
+  text-shadow: 0 1px 3px rgba(31, 70, 108, 0.15), 0 2px 10px rgba(31, 70, 108, 0.12);
 }
 
+/* Typographie des titres */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Playfair Display', serif;
   color: var(--brand-primary);
