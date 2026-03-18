@@ -1,15 +1,77 @@
 (async function() {
-  // Empêche l'utilisation de Fetch en mode file:// (ne fonctionne qu'avec un serveur HTTP)
-  if (window.location.protocol === 'file:') {
-    console.error('Mode file:// : fetch ne fonctionne pas. Lance un serveur local (python -m http.server).');
-    return;
-  }
 
   // Récupère rapidement un élément par son id
   const getEl = id => document.getElementById(id);
 
   // Injecte le HTML à l'intérieur d'un conteneur sans remplacer des nœuds parents
   const setHtml = (id, html) => getEl(id)?.insertAdjacentHTML('afterbegin', html);
+
+  // ***** DARK MODE *****
+  // Initialise le thème au chargement de la page
+  const initTheme = () => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-theme');
+      updateThemeButton(true);
+    }
+  };
+
+  // Met à jour l'affichage du bouton de thème
+  const updateThemeButton = (isDark) => {
+    const btn = getEl('theme-toggle');
+    if (btn) {
+      btn.textContent = isDark ? '☀️ Thème' : '🌙 Thème';
+    }
+  };
+
+  // Gère le basculement de thème avec localStorage
+  const toggleTheme = () => {
+    const isDark = document.body.classList.toggle('dark-theme');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateThemeButton(isDark);
+  };
+
+  // Attache l'événement au bouton de thème
+  initTheme();
+  const themeBtn = getEl('theme-toggle');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', toggleTheme);
+  }
+
+  // Blague million d'euros (rickroll)
+  const millionBlague = getEl('million-blague');
+  const rickrollContainer = getEl('rickroll-container');
+  if (millionBlague && rickrollContainer) {
+    millionBlague.addEventListener('click', () => {
+      // Masquer la blague et afficher le rickroll
+      millionBlague.classList.add('hidden');
+      rickrollContainer.classList.remove('hidden');
+      rickrollContainer.classList.add('visible');
+
+      // Créer la vidéo de manière sécurisée
+      const video = document.createElement('video');
+      video.setAttribute('controls', '');
+      video.setAttribute('autoplay', '');
+      video.setAttribute('width', '480');
+      video.setAttribute('height', '270');
+      video.classList.add('rickroll-video');
+
+      const source = document.createElement('source');
+      source.src = 'https://rickroll.it/rickroll.mp4';
+      source.type = 'video/mp4';
+      video.appendChild(source);
+
+      // Créer le texte de manière sécurisée
+      const textP = document.createElement('p');
+      textP.classList.add('rickroll-text');
+      textP.textContent = 'Jamais de million, mais toujours du style !';
+
+      // Vider et remplir le conteneur
+      rickrollContainer.innerHTML = '';
+      rickrollContainer.appendChild(video);
+      rickrollContainer.appendChild(textP);
+    });
+  }
 
   try {
     // Chargement parallèle simultané de nav et footer
