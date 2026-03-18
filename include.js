@@ -1,44 +1,33 @@
-// fonction utilitaire pour injecter le HTML et marquer la page courante
-function applyNavFooter(navHtml, footerHtml) {
-  const navContainer = document.getElementById('site-nav');
-  const footerContainer = document.getElementById('site-footer');
-
-  if (navContainer) navContainer.innerHTML = navHtml;
-  if (footerContainer) footerContainer.innerHTML = footerHtml;
-
-  const current = window.location.pathname.split('/').pop() || 'index.html';
-  const activeLink = navContainer?.querySelector(`a[href="${current}"]`);
-  if (activeLink) activeLink.classList.add('active');
-}
-
-// main : on charge les blocs en mode dynamique sans fallback
-async function loadPartials() {
+(async function() {
+  // Empêche l'utilisation de Fetch en mode file:// (ne fonctionne qu'avec un serveur HTTP)
   if (window.location.protocol === 'file:') {
-    console.error('Mode file:// détecté : fetch ne fonctionnera pas. Lance un serveur local (python -m http.server).');
+    console.error('Mode file:// : fetch ne fonctionne pas. Lance un serveur local (python -m http.server).');
     return;
   }
 
+  // Récupère rapidement un élément par son id
+  const getEl = id => document.getElementById(id);
+
+  // Injecte le HTML à l'intérieur d'un conteneur sans remplacer des nœuds parents
+  const setHtml = (id, html) => getEl(id)?.insertAdjacentHTML('afterbegin', html);
+
   try {
-    const [navRes, footerRes] = await Promise.all([
-      fetch('nav.html'),
-      fetch('footer.html')
+    // Chargement parallèle simultané de nav et footer
+    const [navHtml, footerHtml] = await Promise.all([
+      fetch('nav.html').then(resp => resp.ok ? resp.text() : Promise.reject('nav non chargé')),
+      fetch('footer.html').then(resp => resp.ok ? resp.text() : Promise.reject('footer non chargé'))
     ]);
 
-    if (!navRes.ok || !footerRes.ok) {
-      throw new Error('Impossible de charger le menu ou le footer');
-    }
+    // Injection HTML dans les conteneurs destinés
+    setHtml('site-nav', navHtml);
+    setHtml('site-footer', footerHtml);
 
-    const [navHtml, footerHtml] = await Promise.all([navRes.text(), footerRes.text()]);
-    applyNavFooter(navHtml, footerHtml);
-  } catch (error) {
-    console.error('Erreur include.js:', error);
+    // Détermine la page actuelle pour marquer le lien actif dans le menu
+    const currentPage = new URL(window.location.href).pathname.split('/').pop() || 'index.html';
+    getEl('site-nav')?.querySelector(`a[href="${currentPage}"]`)?.classList.add('active');
+  } catch (err) {
+    // Erreur affichée dans la console pour débogage
+    console.error('include.js:', err);
   }
-}
-
-// Avec ou sans DOMContentLoaded, on lance loadPartials au bon moment.
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', loadPartials);
-} else {
-  loadPartials();
-}
+})();
 
