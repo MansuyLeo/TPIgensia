@@ -88,8 +88,7 @@
     const currentPage = new URL(window.location.href).pathname.split('/').pop() || 'index.html';
     getEl('site-nav')?.querySelector(`a[href="${currentPage}"]`)?.classList.add('active');
   } catch (err) {
-    // Erreur affichée dans la console pour débogage
-    console.error('include.js:', err);
+    // Erreur capturée silencieusement
   }
 })();
 
