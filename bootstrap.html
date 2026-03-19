@@ -332,6 +332,39 @@
       box-shadow: 0 5px 15px rgba(242, 165, 69, 0.3);
     }
 
+    #theme-toggle {
+      position: fixed;
+      top: 1.5rem;
+      right: 2rem;
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(242, 165, 69, 0.3);
+      border-radius: 99px;
+      background: rgba(42, 37, 32, 0.9);
+      color: #e8e6e1;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 105;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    #theme-toggle:hover {
+      background: var(--dashboard-accent);
+      color: var(--dashboard-darker);
+      transform: rotate(20deg) scale(1.05);
+      box-shadow: 0 4px 12px rgba(242, 165, 69, 0.4);
+    }
+
+    @media (max-width: 768px) {
+      #theme-toggle {
+        top: 1rem;
+        right: 1rem;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+      }
+    }
+
     @media (max-width: 768px) {
       .sidebar-toggle {
         display: flex;
@@ -342,6 +375,8 @@
   </style>
 </head>
 <body>
+  <button id="theme-toggle" aria-label="Changer de thème">🌙 Thème</button>
+  
   <div class="dashboard-mode">
     <!-- Sidebar -->
     <aside class="dashboard-sidebar">
