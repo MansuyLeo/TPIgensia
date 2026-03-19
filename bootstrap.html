@@ -3,29 +3,509 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bootstrap | CV Portfolio</title>
+  <title>Admin Dashboard | CV Portfolio</title>
   <link rel="icon" href="img/favicon.jpg" type="image/jpeg">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    * {
+      --dashboard-dark: #1a1815;
+      --dashboard-darker: #0f0d0a;
+      --dashboard-accent: #f2a545;
+      --sidebar-width: 280px;
+    }
+
+    body.dashboard-mode {
+      display: flex;
+      min-height: 100vh;
+      background: linear-gradient(145deg, #1a1815, #2a2520);
+    }
+
+    .dashboard-sidebar {
+      width: var(--sidebar-width);
+      background: linear-gradient(180deg, var(--dashboard-darker) 0%, var(--dashboard-dark) 100%);
+      color: #e8e6e1;
+      padding: 2rem 0;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      box-shadow: 2px 0 15px rgba(0, 0, 0, 0.5);
+      z-index: 90;
+    }
+
+    .dashboard-sidebar h3 {
+      color: var(--dashboard-accent);
+      font-size: 1.4rem;
+      padding: 1.5rem;
+      margin: 0;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+      border-bottom: 2px solid var(--dashboard-accent);
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0;
+    }
+
+    .sidebar-menu li {
+      margin: 0;
+    }
+
+    .sidebar-menu a {
+      display: block;
+      padding: 1rem 1.5rem;
+      color: #b8b4aa;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-menu a:hover,
+    .sidebar-menu a.active {
+      background-color: rgba(242, 165, 69, 0.15);
+      color: var(--dashboard-accent);
+      border-left-color: var(--dashboard-accent);
+      padding-left: 2rem;
+    }
+
+    .dashboard-main {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    .breadcrumb-custom {
+      background: transparent;
+      padding: 1rem 0;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+
+    .breadcrumb-custom .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0;
+    }
+
+    .breadcrumb-custom .breadcrumb-item {
+      color: #b8b4aa;
+      display: flex;
+      align-items: center;
+      padding: 0;
+      margin: 0;
+    }
+
+    .breadcrumb-custom .breadcrumb-item::before {
+      content: "›";
+      margin-right: 0.5rem;
+      color: #8bc9f0;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .breadcrumb-custom .breadcrumb-item:first-child::before {
+      content: "";
+      margin-right: 0;
+    }
+
+    .breadcrumb-custom .breadcrumb-item.active {
+      color: var(--dashboard-accent);
+      font-weight: 600;
+    }
+
+    .breadcrumb-custom a {
+      color: #8bc9f0;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .breadcrumb-custom a:hover {
+      color: var(--dashboard-accent);
+      text-decoration: underline;
+    }
+
+    .dashboard-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .metric-card {
+      background: rgba(42, 37, 32, 0.8);
+      border: 1px solid rgba(242, 165, 69, 0.2);
+      border-radius: 0.8rem;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .metric-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(242, 165, 69, 0.15);
+      border-color: rgba(242, 165, 69, 0.5);
+    }
+
+    .metric-card.red {
+      border-top: 3px solid #ff6b6b;
+    }
+
+    .metric-card.green {
+      border-top: 3px solid #51cf66;
+    }
+
+    .metric-card.blue {
+      border-top: 3px solid #4ecdc4;
+    }
+
+    .metric-label {
+      font-size: 0.9rem;
+      color: #b8b4aa;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-value {
+      font-size: 2.2rem;
+      font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 0.8rem;
+    }
+
+    .metric-card.red .metric-value {
+      color: #ff6b6b;
+    }
+
+    .metric-card.green .metric-value {
+      color: #51cf66;
+    }
+
+    .metric-card.blue .metric-value {
+      color: #4ecdc4;
+    }
+
+    .metric-change {
+      font-size: 0.85rem;
+      color: #b8b4aa;
+    }
+
+    .metrics-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .progress-section {
+      background: rgba(42, 37, 32, 0.8);
+      border: 1px solid rgba(242, 165, 69, 0.2);
+      border-radius: 0.8rem;
+      padding: 1.5rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .progress-section h4 {
+      color: var(--dashboard-accent);
+      margin-bottom: 1.5rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .progress-item {
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: #b8b4aa;
+    }
+
+    .progress-bar-container {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar-animated {
+      height: 100%;
+      background: linear-gradient(90deg, var(--start-color), var(--end-color));
+      border-radius: 10px;
+      animation: slideProgress 2s ease-in-out infinite;
+      background-size: 200% 100%;
+    }
+
+    @keyframes slideProgress {
+      0%, 100% {
+        background-position: 0% 0%;
+      }
+      50% {
+        background-position: 100% 0%;
+      }
+    }
+
+    .lorem-section {
+      background: rgba(42, 37, 32, 0.8);
+      border: 1px solid rgba(242, 165, 69, 0.2);
+      border-radius: 0.8rem;
+      padding: 1.5rem;
+      backdrop-filter: blur(10px);
+      height: 100%;
+    }
+
+    .lorem-section h4 {
+      color: var(--dashboard-accent);
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .lorem-section p {
+      color: #b8b4aa;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        width: 100%;
+        max-width: var(--sidebar-width);
+      }
+
+      .dashboard-sidebar.active {
+        transform: translateX(0);
+      }
+
+      .dashboard-main {
+        margin-left: 0;
+        padding: 1rem;
+      }
+
+      .metrics-container {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .breadcrumb-custom {
+        padding: 0.5rem 0;
+        margin-bottom: 1rem;
+        font-size: 0.85rem;
+      }
+    }
+
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 100;
+      background: var(--dashboard-accent);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 5px 15px rgba(242, 165, 69, 0.3);
+    }
+
+    #theme-toggle {
+      position: fixed;
+      top: 1.5rem;
+      right: 2rem;
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(242, 165, 69, 0.3);
+      border-radius: 99px;
+      background: rgba(42, 37, 32, 0.9);
+      color: #e8e6e1;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 105;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    #theme-toggle:hover {
+      background: var(--dashboard-accent);
+      color: var(--dashboard-darker);
+      transform: rotate(20deg) scale(1.05);
+      box-shadow: 0 4px 12px rgba(242, 165, 69, 0.4);
+    }
+
+    @media (max-width: 768px) {
+      #theme-toggle {
+        top: 1rem;
+        right: 1rem;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  </style>
 </head>
-<body id="top">
-  <!-- Page bootstrap du site CV/portfolio -->
-  <header>
-    <button id="theme-toggle" aria-label="Changer de thème">🌙 Thème</button>
-    <h1>Page Bootstrap</h1>
-  </header>
+<body>
+  <button id="theme-toggle" aria-label="Changer de thème">🌙 Thème</button>
+  
+  <div class="dashboard-mode">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <h3>📊 Admin</h3>
+      <ul class="sidebar-menu">
+        <li><a href="#" class="active">📊 Dashboard</a></li>
+        <li><a href="#">📈 Statistiques</a></li>
+        <li><a href="#">👥 Utilisateurs</a></li>
+        <li><a href="#">💰 Revenus</a></li>
+        <li><a href="#">⚙️ Configuration</a></li>
+        <li><a href="#">📝 Rapports</a></li>
+        <li><a href="#">🔔 Notifications</a></li>
+        <li><a href="#">🔐 Sécurité</a></li>
+        <li style="border-top: 1px solid rgba(242, 165, 69, 0.2); margin-top: 2rem; padding-top: 1rem;">
+          <a href="index.html" style="color: #ff6b6b;">← Retour au portfolio</a>
+        </li>
+      </ul>
+    </aside>
 
-  <nav id="site-nav" aria-label="Navigation principale"></nav>
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb-custom">
+        <ol class="breadcrumb" style="background: transparent; margin-bottom: 0;">
+          <li class="breadcrumb-item"><a href="#">Admin</a></li>
+          <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+      </nav>
 
-  <main>
-    <section>
-      <h2>Présentation Bootstrap</h2>
-      <p>Page vide en lorem ipsum pour travailler sur l'assemblage du site.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus at dui sit amet eros viverra consectetur.</p>
-    </section>
-    <p><a href="#top" class="jump">Retour en haut</a></p>
-  </main>
+      <!-- Page Title -->
+      <div style="margin-bottom: 2rem;">
+        <h1 style="color: var(--dashboard-accent); font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 0.5rem;">
+          Bienvenue au Dashboard
+        </h1>
+        <p style="color: #b8b4aa; margin: 0;">Vue d'ensemble de vos données et statistiques</p>
+      </div>
 
-  <footer id="site-footer"></footer>
+      <!-- Metric Cards -->
+      <div class="dashboard-cards">
+        <div class="metric-card red">
+          <div class="metric-label">Ventes totales</div>
+          <div class="metric-value">+500</div>
+          <div class="metric-change">↑ 12% depuis la semaine dernière</div>
+        </div>
+
+        <div class="metric-card green">
+          <div class="metric-label">Utilisateurs actifs</div>
+          <div class="metric-value">1,234</div>
+          <div class="metric-change">↑ 8% depuis le mois dernier</div>
+        </div>
+
+        <div class="metric-card blue">
+          <div class="metric-label">Revenus générés</div>
+          <div class="metric-value">€25,490</div>
+          <div class="metric-change">↑ 23% depuis l'année dernière</div>
+        </div>
+      </div>
+
+      <!-- Progress Bars + Lorem Section -->
+      <div class="metrics-container">
+        <div class="progress-section">
+          <h4>📊 Performance</h4>
+
+          <div class="progress-item">
+            <div class="progress-label">
+              <span>Charge serveur</span>
+              <span style="color: var(--dashboard-accent);">78%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-animated" style="width: 78%; --start-color: #ff6b6b; --end-color: #ff8787;"></div>
+            </div>
+          </div>
+
+          <div class="progress-item">
+            <div class="progress-label">
+              <span>Utilisation BD</span>
+              <span style="color: #51cf66;">45%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-animated" style="width: 45%; --start-color: #51cf66; --end-color: #69db7c;"></div>
+            </div>
+          </div>
+
+          <div class="progress-item">
+            <div class="progress-label">
+              <span>Cache disponible</span>
+              <span style="color: #4ecdc4;">20%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-animated" style="width: 20%; --start-color: #4ecdc4; --end-color: #66ffff;"></div>
+            </div>
+          </div>
+
+          <div class="progress-item">
+            <div class="progress-label">
+              <span>Bande passante</span>
+              <span style="color: #f2a545;">56%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-animated" style="width: 56%; --start-color: #f2a545; --end-color: #f9ca24;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lorem-section">
+          <h4>📌 Informations</h4>
+          <p>
+            <strong>Bienvenue dans l'Admin Dashboard!</strong> Ce tableau de bord centralise toutes les métriques importantes de votre système. 
+            Vous trouverez en temps réel les statistiques de vente, le nombre d'utilisateurs actifs et la génération de revenus.
+          </p>
+          <p style="margin-top: 1rem;">
+            <strong>Performance System:</strong> Tous les indicateurs de performance sont affichés ci-contre avec des mises à jour en direct. 
+            La charge serveur reste stable à 78%, l'utilisation de la base de données à 45%, et le cache disponible à 20%.
+            Monitorer régulièrement ces métriques pour optimiser les performances.
+          </p>
+          <p style="margin-top: 1rem; font-size: 0.9rem; color: #8bc9f0;">
+            💡 <em>Conseil:</em> Consultez la section Statistiques pour analyser les tendances sur plusieurs périodes.
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Mobile Sidebar Toggle -->
+    <button class="sidebar-toggle" aria-label="Toggle sidebar" onclick="document.querySelector('.dashboard-sidebar').classList.toggle('active')">
+      ☰
+    </button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="include.js"></script>
 </body>
 </html>
