@@ -672,6 +672,34 @@ footer .footer-right a {
   color: var(--brand-accent);
 }
 
+/* Classes réutilisables */
+.text-center {
+  text-align: center;
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.fs-sm {
+  font-size: 0.95em;
+}
+
+.line-height-tight {
+  line-height: 1.6;
+}
+
+.mt-sm {
+  margin-top: 0.5rem;
+}
+
+/* Images responsives */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
 /* Adaptation responsive */
 @media (max-width: 740px) {
   body {

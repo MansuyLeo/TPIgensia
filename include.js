@@ -27,7 +27,11 @@
   // Gère le basculement de thème avec localStorage
   const toggleTheme = () => {
     const isDark = document.body.classList.toggle('dark-theme');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    try {
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    } catch (e) {
+      // localStorage peut échouer en mode privé - on ignore l'erreur
+    }
     updateThemeButton(isDark);
   };
 
